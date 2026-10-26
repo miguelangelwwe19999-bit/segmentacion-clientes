@@ -312,11 +312,18 @@ else:
     st.title("Prueba de concepto: clasificar un cliente nuevo")
     st.write("Ingrese los datos del cliente. Se aplica el mismo escalado, codificación y modelo K-Means del análisis.")
     med = dfc[FEATURES].median()
+    ENTEROS = ["Edad", "Antigüedad meses", "Compras últimos 6 meses",
+               "Días desde última compra", "Visitas mensuales"]
     with st.form("cliente"):
         cols = st.columns(3)
         datos_cliente = {}
         for i, f in enumerate(FEATURES):
-            datos_cliente[f] = cols[i % 3].number_input(f, min_value=0.0, value=float(round(med[f], 2)))
+            if f in ENTEROS:
+                datos_cliente[f] = cols[i % 3].number_input(
+                    f, min_value=0, value=int(round(med[f])), step=1)
+            else:
+                datos_cliente[f] = cols[i % 3].number_input(
+                    f, min_value=0.0, value=float(round(med[f], 2)), step=0.1, format="%.2f")
         a, b = st.columns(2)
         datos_cliente["Categoría más frecuente"] = a.selectbox(
             "Categoría más frecuente", sorted(dfc["Categoría más frecuente"].unique()))
